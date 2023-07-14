@@ -2,12 +2,25 @@ import { useState } from 'react';
 import './styles.css'
 import { NewTodoForm } from './NewTodoForm';
 import { TodoList } from './TodoList';
+import { useEffect } from 'react';
 
 // you can only ever return 1 element for a react component.
 // so to have multiple, create a big fragment or div and nest
 // other components inside it
+
+// Hooks need to be at the top of the function.
+// Also, they can't be put in conditions, loops or returns
 export default function App() {
-  const [todos, setTodos] = useState([])
+  const [todos, setTodos] = useState(() => {
+    const localValue = localStorage.getItem("ITEMS");
+    if (localValue == null) return [];
+
+    return JSON.parse(localValue);
+  });
+
+  useEffect(() => {
+    localStorage.setItem("ITEMS", JSON.stringify(todos));
+  }, [todos]);
 
   function addTodo(title){
       setTodos((currentTodos) => {
